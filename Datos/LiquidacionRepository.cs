@@ -10,13 +10,15 @@ namespace Datos
 {
     public class LiquidacionRepository
     {
-        public string ruta = @"ListaPersonaLiquidadasImpuesto.txt";
+         string ruta = "ListaLiquidadasImpuesto.txt";
 
         public void Guardar(LiquidacionImpuesto paciente)
         {
-           StreamWriter escritor = new StreamWriter(ruta, true);
-            escritor.WriteLine($"{paciente.Identificacion};{paciente.NombreEstablecimiento};{paciente.ValorIngresoAnual};{paciente.ValorGastoAnual};{paciente.TipoResponsabilidad};{paciente.TiempoFuncionamiento};{paciente.Ganancia};{paciente.Tarifa};{paciente.ValorUVT };{paciente.ValorLiquidacion}");
-
+            FileStream file = new FileStream(ruta, FileMode.Append);
+            StreamWriter escritor = new StreamWriter(file);
+            escritor.WriteLine(paciente.ToString());
+            escritor.Close();
+            file.Close();  
         }
 
         public List<LiquidacionImpuesto> Consultar()
@@ -97,5 +99,40 @@ namespace Datos
             }
             return null;
         }
+
+        public LiquidacionImpuesto FiltrarPorIdentificacion(long identificacion)
+        {
+            return (LiquidacionImpuesto)Consultar().FirstOrDefault(p => p.Identificacion.Equals(identificacion));
+        }
+
+        public List<LiquidacionImpuesto> FiltrarPorNombreDeEstablecimiento(string palabra)
+        {
+            return (from p in Consultar()
+                    where p.NombreEstablecimiento.ToLower().Contains(palabra.ToLower())
+                    select p).ToList();
+        }
+
+        public List<LiquidacionImpuesto> FiltarPorIngresoAnual(decimal valor)
+        {
+            return Consultar().Where(p => p.ValorIngresoAnual.Equals(valor)).ToList();
+        }
+
+        public List<LiquidacionImpuesto> FiltrarPorGastoAnual(decimal valor)
+        {
+            return Consultar().Where(p => p.ValorGastoAnual.Equals(valor)).ToList();
+        }
+
+        public List<LiquidacionImpuesto> FiltrarPorTipoResponsabilidad(string responsabilidad)
+        {
+            return Consultar().Where(p => p.TipoResponsabilidad.ToUpper().Equals(responsabilidad)).ToList();
+        }
+
+        public List<LiquidacionImpuesto> FiltrarPorTiempoDeFuncionamiento(int tiempo)
+        {
+            return Consultar().Where(p=> p.TiempoFuncionamiento.Equals(tiempo)).ToList();
+        }
+
+
+
     }
 }

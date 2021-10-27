@@ -39,20 +39,21 @@ namespace Logica
                 return new LiquidacionConsultaResponse($"Error inesperado al Consultar: {e.Message}");
             }
         }
-        public string Eliminar(long identificacion)
+        public (string, LiquidacionImpuesto) Eliminar(long numeroLiquidacion)
         {
             try
             {
-                if (liquidacionRepository.Buscar(identificacion) != null)
+                var personaEliminada = liquidacionRepository.Buscar(numeroLiquidacion);
+                if (personaEliminada != null)
                 {
-                    liquidacionRepository.Eliminar(identificacion);
-                    return $"Se Eliminó el registro de la persona con Nro.Liquidacion ({identificacion})";
+                    liquidacionRepository.Eliminar(numeroLiquidacion);
+                    return ($"Se Eliminó el registro de la persona con identificacion {numeroLiquidacion}", personaEliminada);
                 }
-                return $"No fue posible eliminar el registro, porque no existe la persona con Nro.Liquidacion ({identificacion})";
+                return ($"No fue posible eliminar el registro, porque no existe la persona con la identificacion {numeroLiquidacion}", personaEliminada);
             }
             catch (Exception e)
             {
-                return $"Error inesperado al Eliminar: {e.Message}";
+                return ($"Error inesperado al Eliminar: {e.Message}", null);
             }
 
         }
@@ -71,5 +72,83 @@ namespace Logica
                 return $"Error inesperado al Buscar: {e.Message}";
             }
         }
+
+        public LiquidacionBuscarResponse ConsultarPorIdentificacion(long identificacion)
+        {
+            try
+            {
+                var paciente = liquidacionRepository.FiltrarPorIdentificacion(identificacion);
+                if (paciente == null)
+                {
+                    throw new PersonaNoEncontradoException("No se encontró un registro con el Nro.Identificacion Solicitada");
+                }
+                return new LiquidacionBuscarResponse(paciente);
+            }
+            catch (PersonaNoEncontradoException e)
+            {
+                return new LiquidacionBuscarResponse($"Error al Buscar Nro Liquidacion :{e.Message}");
+            }
+        }
+
+        public LiquidacionConsultaResponse ConsultarPorNombreEstablecimiento(string establecimiento)
+        {
+            try
+            {
+                return new LiquidacionConsultaResponse(liquidacionRepository.FiltrarPorNombreDeEstablecimiento(establecimiento));
+            }
+            catch (Exception e)
+            {
+                return new LiquidacionConsultaResponse("Se presento el siguiente: " + e.Message);
+            }
+        }
+
+        public LiquidacionConsultaResponse ConsultarPorGastoAnual(decimal valor)
+        {
+            try
+            {
+                return new LiquidacionConsultaResponse(liquidacionRepository.FiltrarPorGastoAnual(valor));
+            }
+            catch (Exception e)
+            {
+                return new LiquidacionConsultaResponse("Se presento el siguiente: " + e.Message);
+            }
+        }
+
+        public LiquidacionConsultaResponse ConsultarPorIngresoAnual(decimal valor)
+        {
+            try
+            {
+                return new LiquidacionConsultaResponse(liquidacionRepository.FiltarPorIngresoAnual(valor));
+            }
+            catch (Exception e)
+            {
+                return new LiquidacionConsultaResponse("Se presento el siguiente: " + e.Message);
+            }
+        }
+
+        public LiquidacionConsultaResponse ConsultarPorTipoResponsabilidad(string tipo)
+        {
+            try
+            {
+                return new LiquidacionConsultaResponse(liquidacionRepository.FiltrarPorTipoResponsabilidad(tipo));
+            }
+            catch (Exception e)
+            {
+                return new LiquidacionConsultaResponse("Se presento el siguiente: " + e.Message);
+            }
+        }
+
+        public LiquidacionConsultaResponse ConsultarPorTiempoFuncionamiento(int anio)
+        {
+            try
+            {
+                return new LiquidacionConsultaResponse(liquidacionRepository.FiltrarPorTiempoDeFuncionamiento(anio));
+            }
+            catch (Exception e)
+            {
+                return new LiquidacionConsultaResponse("Se presento el siguiente: " + e.Message);
+            }
+        }
+
     }
 }

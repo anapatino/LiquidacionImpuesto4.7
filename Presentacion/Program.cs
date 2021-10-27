@@ -166,7 +166,7 @@ namespace Presentacion
             Console.WriteLine("------Eliminar por Identificacion --------");
             Console.WriteLine();
             Console.Write(" Nro Liquidacion :"); long numeroIdentificacion = long.Parse(Console.ReadLine());
-            string mensajeEliminacion = liquidacionService.Eliminar(numeroIdentificacion);
+            var ( mensajeEliminacion,persona) = liquidacionService.Eliminar(numeroIdentificacion);
             Console.WriteLine($"    { mensajeEliminacion} ");
             Console.WriteLine();
             Console.Write("   Pulse una tecla para salir "); Console.ReadKey();

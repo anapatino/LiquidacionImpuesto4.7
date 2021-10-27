@@ -24,6 +24,7 @@ namespace Entidad
             TipoResponsabilidad = tipoResponsabilidad;
             TiempoFuncionamiento = tiempoFuncionamiento;
         }
+
         public long Identificacion { get; set; }
         public string NombreEstablecimiento { get; set; }
         public decimal ValorIngresoAnual { get; set; }
